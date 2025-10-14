@@ -16,7 +16,7 @@ def display_board(board):
     for i in range(n):
         row_str = "|"             #The left border      
         for j in range(n):         #Outer loop will be for rows and inner loop will be for columns
-            symbol = " "           # Each cell is assumed to be blank first 
+            symbol = " "           # Each cell can assumed to be blank first 
 #Indexes in row 0: 0, 1, 2, 3, 4
 #Indexes in row 1: 5, 6, 7, 8, 9
 #Indexes in row 2: 10, 11, 12, 13, 14
