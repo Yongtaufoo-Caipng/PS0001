@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 13 23:04:12 2025
+
+@author: kennykhoo123
+"""
+
+# %%
+def display_board(board):
+    n = int(len(board) ** 0.5)  # This is to get the board side length, board alrd has a predetermined value
+    print("=" * (n * 4 + 1))      # Each cell takes up 4 characters (" X |"), and there is 1 extra border on the left.
+                                         # So total width of the board border = n * 4 + 1.
+    
+    for i in range(n):
+        row_str = "|"             #The left border      
+        for j in range(n):
+            symbol = " "           # Each cell is assumed to be blank
+            if board[i*n + j] == 1:
+                symbol = "X"
+            elif board[i*n + j] == 2:
+                symbol = "O"
+            row_str += f" {symbol} |"
+        print(row_str)
+        if i < n - 1:
+            print("|" + "---|" * n)
+    
+    print("=" * (n * 4 + 1))
+    
+    # Display index numbers for reference
+    print("\nIndex positions:")
+    for i in range(n):
+        row_str = ""
+        for j in range(n):
+            row_str += f" {i*n + j:2d} "
+        print(row_str)
+    print()
+display_board(board)
+# %%
+
