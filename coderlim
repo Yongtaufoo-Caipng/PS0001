@@ -1,1 +1,33 @@
-
+def apply_move(board, turn, index, push_from):
+   
+    n = int(len(board) ** 0.5)  # len(board) gives total no. of cells(25), ** 0.5 takes the square root(5), int() converts it to an integer 
+    new_board = board.copy() # can modify new_board w/o changing original board
+    
+    row, col = index // n, index % n # index // n is row no. - each row has n items; counting how many full rows fit before index gives the row
+    # index % n is column no.(remainder) - whats left after removing full rows is the column within that row
+    
+    if push_from == 'T':
+        # shift column down from the top
+        for r in range(row, 0, -1): # the loop counts downwards to prevent overwriting a value we still need to read
+            new_board[r*n + col] = new_board[(r-1)*n + col] # destination index is r*n + col the cell at row r column col, source index is (r-1)*n + col the cell one row above the destination
+        new_board[col] = turn  # your piece (turn) is inserted at the top
+    
+    elif push_from == 'B':
+        # shift column up from the bottom
+        for r in range(row, n-1): # gives row, row+1, ..., n-2, loop goes upwards
+            new_board[r*n + col] = new_board[(r+1)*n + col]
+        new_board[(n-1)*n + col] = turn  # your piece is inserted at the bottom position
+    
+    elif push_from == 'L':
+        # shift row right from the left, cells are shifted to the right
+        for c in range(col, 0, -1): # loop counts right to left
+            new_board[row*n + c] = new_board[row*n + (c-1)] # destination (row, c) gets the value from its left (row, c-1), right to left avoids overwriting data
+        new_board[row*n] = turn  # your piece is inserted at the left position
+    
+    elif push_from == 'R':
+        # shift row left from the right
+        for c in range(col, n-1): # destination takes value from its right
+            new_board[row*n + c] = new_board[row*n + (c+1)]
+        new_board[row*n + (n-1)] = turn  # your piece is inserted at the right position
+    
+    return new_board
