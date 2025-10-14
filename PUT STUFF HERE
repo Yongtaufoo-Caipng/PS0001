@@ -56,10 +56,10 @@ def check_move(board, turn, index, push_from): #passed into the function as a pa
     #n is how many cubes fit on one side of the square board
     
     # Check if the cube index is within the range 0 to n^2-1
-    # index is which cube the player pick is a number
+    # index is which cube the player pick, is a number
     if index < 0 or index >= len(board):
         return False
-    #if either one of the index is true the whole thing will print false 
+    #if either one of the index is true the whole thing will return false 
     
     # Check if the cube is on the outer ring of the board
 
@@ -70,6 +70,29 @@ def check_move(board, turn, index, push_from): #passed into the function as a pa
             #T F F F = T , if not(T) = F , return F as condition is F 
             #F F F F = F ,  if not(F) = T , do not return F as condition is T
         return False
+    
+    # Check if the cube belongs to the player or is blank
+    #!= not equal to, board[index] is the symbol at that point, means only X or O
+    if board[index] != 0 and board[index] != turn: #turn is 1 or 2 
+    # turn represents the current player's turn, the 0 means it's an empty square 
+    # eg  if the board is not 0 and it is not the players turn then it will return false 
+    # and is T if both are T, then can return F means game dont continue
+        return False #invalid move 
+    
+    # Check if push direction is valid
+    if push_from not in ['T', 'B', 'L', 'R']:
+        return False
+    
+    # Check if we're not pushing from the same position
+    if (push_from == 'T' and row == 0) or \
+       (push_from == 'B' and row == n-1) or \
+       (push_from == 'L' and col == 0) or \
+       (push_from == 'R' and col == n-1):
+        return False 
+    #to check if we are trying to push from the same edge that we are already on 
+    #eg at 0 cannot push from Top position anymore, so if any of this is true can return false  
+    
+    return True
 
 def apply_move(board, turn, index, push_from):
    
