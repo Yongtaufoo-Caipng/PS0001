@@ -45,6 +45,50 @@ def display_board(board):
         print(row_str)
     print()
 
+import random
+import os
+
+def check_move(board, turn, index, push_from): #passed into the function as a parameter
+    
+    n = int(len(board) ** 0.5)  # len(board) gives the total number of elements in the list
+    #len(board)= n x n hence n = sqaureroot (len(board))
+    #n is how many cubes fit on one side of the square board
+    
+    # Check if the cube index is within the range 0 to n^2-1
+    # index is which cube the player pick is a number
+    if index < 0 or index >= len(board):
+        return False
+    #if either one of the index is true the whole thing will print false 
+    
+    # Check if the cube is on the outer ring of the board
+
+    row = index // n   # // is floor division get the integer only and to get the row number 
+    col = index % n  # is to check for col number 
+    if not (row == 0 or row == n-1 or col == 0 or col == n-1):
+            #top edge   #bottom edge  #left egde  #right edge
+            #T F F F = T , if not(T) = F , return F as condition is F 
+            #F F F F = F ,  if not(F) = T , do not return F as condition is T
+        return False
+    
+    # Check if the cube belongs to the player or is blank
+    #!= not equal to ,i board[index] is the value at that point means only X or O
+    if board[index] != 0 and board[index] != turn: # turn represents the current players turn
+    #and is T if both are T , then can return F 
+        return False #invalid move 
+    
+    # Check if push direction is valid
+    if push_from not in ['T', 'B', 'L', 'R']:
+        return False
+    
+    # Check if we're not pushing from the same position
+    if (push_from == 'T' and row == 0) or \
+       (push_from == 'B' and row == n-1) or \
+       (push_from == 'L' and col == 0) or \
+       (push_from == 'R' and col == n-1):
+        return False #either one of the abv are true then can return as false
+    
+    return True
+
 def check_victory(board, who_played):
     n = int(len(board) ** 0.5)
     player1_win = False
