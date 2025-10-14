@@ -1,7 +1,8 @@
 def apply_move(board, turn, index, push_from):
    
     n = int(len(board) ** 0.5)  # len(board) gives total no. of cells(25), ** 0.5 takes the square root(5), int() converts it to an integer 
-    new_board = board.copy() # can modify new_board w/o changing original board
+    new_board = board[:]
+    new_board = list(board) # can modify new_board w/o changing original board
     
     row = index // n   # // is floor division get the integer only
     col = index % n
