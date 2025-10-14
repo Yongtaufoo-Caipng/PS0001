@@ -1,1 +1,68 @@
+ef display_board(board):
+    n = int(len(board) ** 0.5)  # This is to get the board side length, board alrd has a predetermined value
+    print("=" * (n * 4 + 1))      # Each cell takes up 4 characters (" X |"), and there is 1 extra border on the left.
+                                         # So total width of the board border = n * 4 + 1.
+    
+    for i in range(n):
+        row_str = "|"             #The left border      
+        for j in range(n):
+            symbol = " "           # Each cell is assumed to be blank
+            if board[i*n + j] == 1:
+                symbol = "X"       #defines X
+            elif board[i*n + j] == 2:
+                symbol = "O"       #Defines O
+            row_str += f" {symbol} |"
+        print(row_str)             
+        if i < n - 1:
+            print("|" + "---|" * n)   #Creates the border in between the cell.
+    
+    print("=" * (n * 4 + 1))
+    
+    # Display index numbers for reference
+    print("\nIndex positions:")
+    for i in range(n):
+        row_str = ""
+        for j in range(n):
+            row_str += f" {i*n + j:2d} "
+        print(row_str)
+    print()
+# %%
+    
+# --- GAME MENU / MAIN LOOP ---
+def menu():
+    print("Welcome to Quixo!")
+    print("1. Play vs Computer")
+    print("2. Quit")
+    choice = input("Enter your choice (1 or 2): ")
+    if choice != "1":
+        print("Goodbye!")
+        return
+
+    board = [0] * 25
+    turn = 1
+    display_board(board)
+    winner = -1
+
+    while winner == -1:
+        print(f"\nPlayer {turn}'s turn:")
+        if turn == 1:
+            index = int(input("Enter cube index (0–24): "))
+            push_from = input("Enter direction (T, B, L, R): ").upper()
+            if check_move(board, turn, index, push_from):
+                board = apply_move(board, turn, index, push_from)
+            else:
+                print("Invalid move! Try again.")
+                continue
+        else:
+            print("Computer is thinking...")
+            index, push_from = computer_move(board, turn, 1)
+            print(f"Computer chose index {index} from {push_from}")
+            board = apply_move(board, turn, index, push_from)
+
+        display_board(board)
+        winner = check_victory(board, turn)
+        if winner == -1:
+            turn = 2 if turn == 1 else 1
+
+    print(f"\nPlayer {winner} wins!")
 
