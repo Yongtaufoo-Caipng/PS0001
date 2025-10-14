@@ -3,8 +3,8 @@ def apply_move(board, turn, index, push_from):
     n = int(len(board) ** 0.5)  # len(board) gives total no. of cells(25), ** 0.5 takes the square root(5), int() converts it to an integer 
     new_board = board.copy() # can modify new_board w/o changing original board
     
-    row, col = index // n, index % n # index // n is row no. - each row has n items; counting how many full rows fit before index gives the row
-    # index % n is column no.(remainder) - whats left after removing full rows is the column within that row
+    row = index // n   # // is floor division get the integer only
+    col = index % n
     
     if push_from == 'T':
         # shift column down from the top
