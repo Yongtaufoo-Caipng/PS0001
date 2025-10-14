@@ -8,32 +8,40 @@ Created on Mon Oct 13 23:04:12 2025
 
 # %%
 def display_board(board):
-    n = int(len(board) ** 0.5)  # This is to get the board side length, board alrd has a predetermined value
+    n = int(len(board) ** 0.5)  # This is to get the board side length, board is stored as one list, so I took the square root to get the number of rows/columns.”
+
     print("=" * (n * 4 + 1))      # Each cell takes up 4 characters (" X |"), and there is 1 extra border on the left.
                                          # So total width of the board border = n * 4 + 1.
     
     for i in range(n):
         row_str = "|"             #The left border      
-        for j in range(n):
-            symbol = " "           # Each cell is assumed to be blank
+        for j in range(n):         #Outer loop will be for rows and inner loop will be for columns
+            symbol = " "           # Each cell is assumed to be blank first 
+#Indexes in row 0: 0, 1, 2, 3, 4
+#Indexes in row 1: 5, 6, 7, 8, 9
+#Indexes in row 2: 10, 11, 12, 13, 14
+#To get to row 2, you skip 2 full rows (2 × 5 = 10 items).
+#Then, you move 3 steps into that row (add 3).
+#thus, 10 + 3 = 13.
+
             if board[i*n + j] == 1:
-                symbol = "X"
+                symbol = "X"       #defines X
             elif board[i*n + j] == 2:
-                symbol = "O"
-            row_str += f" {symbol} |"
-        print(row_str)
-        if i < n - 1:
+                symbol = "O"       #Defines O
+            row_str += f" {symbol} |"     #F string tells python
+                                          #to replace anything inside {} with its actual value
+        print(row_str)    # will print out / symbol /
+        if i < n - 1:              #Dont print a line after last row
             print("|" + "---|" * n)
     
-    print("=" * (n * 4 + 1))
+    print("=" * (n * 4 + 1))   #prints the bottom border
     
     # Display index numbers for reference
     print("\nIndex positions:")
     for i in range(n):
         row_str = ""
         for j in range(n):
-            row_str += f" {i*n + j:2d} "
+            row_str += f" {i*n + j:2d} "   #2d is to make sure the integers take up at least 2 spaces
         print(row_str)
     print()
-# %%
 
