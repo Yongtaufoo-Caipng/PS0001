@@ -45,3 +45,46 @@ def display_board(board):
         print(row_str)
     print()
 
+def check_victory(board, who_played):
+    n = int(len(board) ** 0.5)
+    player1_win = False
+    player2_win = False
+    #start with both false as none have won
+    #start with false if not if the bottom checking part have error, players will win without actually winning
+    #check rows
+    for i in range(n): #check each row 
+        row_win1 = True 
+        row_win2 = True
+        #asumming both player might win at this row
+        for j in range(n):
+            if board[i*n + j] != 1:
+            #for this row (i) and at this column (j) does it have 1 or 2 
+            #check at which specific square have either 1 or 2
+            #if at that i row does not have all 1 then player 1 did not win
+                row_win1 = False
+            #repeat the same for player 2
+            if board[i*n + j] != 2:
+                row_win2 = False
+        #if the whole row have 1 then player 1 wins, same for player 2
+        if row_win1:
+            player1_win = True
+        if row_win2:
+            player2_win = True
+        #loop will continue for all rows
+    
+    #check columns
+    #do the same for columns
+    for j in range(n):
+        col_win1 = True
+        col_win2 = True
+        for i in range(n):
+            if board[i*n + j] != 1:
+                col_win1 = False
+            if board[i*n + j] != 2:
+                col_win2 = False
+        
+        if col_win1:
+            player1_win = True
+        if col_win2:
+            player2_win = True
+        #loop continues for all column 
