@@ -34,7 +34,8 @@ def display_board(board):
         if i < n - 1:              #Dont print a line after last row
             print("|" + "---|" * n)
     
-    print("=" * (n * 4 + 1))   #prints the bottom border
+    print("=" * (n * 4 + 1))   #prints the bottom border, put + 1 to accoubt for left border, the formula is to count how many spaces
+                               # is needed to form the ======= bottom border
     
     # Display index numbers for reference
     print("\nIndex positions:")
