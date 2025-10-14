@@ -35,6 +35,5 @@ def display_board(board):
             row_str += f" {i*n + j:2d} "
         print(row_str)
     print()
-display_board(board)
 # %%
 
