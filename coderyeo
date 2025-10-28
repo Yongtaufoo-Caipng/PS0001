@@ -49,11 +49,7 @@ def computer_move(board, turn, level):# current board state, turn, current playe
 
     n = int(len(board) ** 0.5)  # Board size , len(board)= n x n hence n = sqaureroot (len(board))
     valid_moves = [] #list and initialisation
-    
-    elif player2_win:
-        return 2
-    else:
-        return 0
+   
     # Generate all possible valid moves
     for position in range(len(board)): #in range of the board size
     #len(board) gives the number of cubes on the board 
