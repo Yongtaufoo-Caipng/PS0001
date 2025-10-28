@@ -32,7 +32,9 @@ def display_board(board):
 
 def menu():
     print("Welcome to Quixo!")
-    print("1. Play vs Computer")
+    print("1. Play vs Computer")                   
+#This part displays the game’s welcome message and gives the user two options — (1) to play the game, or (2) to quit. 
+#Then it uses input() to get what the player types.
     print("2. Quit")
     choice = input("Enter your choice (1 or 2): ")
     if choice != "1":
