@@ -89,13 +89,17 @@ def menu():
             index, push_from = computer_move(board, turn, 1)
             print(f"Computer chose index {index} from {push_from}")
             board = apply_move(board, turn, index, push_from)
+#If it’s player 2’s turn, I let the computer pick a random move using computer_move().
+#The function returns both the index and the push direction.
+#Then I show what move the computer made and update the board with apply_move().
 
-        display_board(board)
+        display_board(board)  #printing the updated board
         winner = check_victory(board, turn)
         if winner == -1:
-            turn = 2 if turn == 1 else 1
+            turn = 2 if turn == 1 else 1   #just to check if the game is over, if not, continue to next person
+                                           # turn codes to just say that if it was player 1 turn its player 2 turn now and vice versa.
 
-    print(f"\nPlayer {winner} wins!")
+    print(f"\nPlayer {winner} wins!")      # once winner is != -1, this command is to print and show who the winner is
 
 def check_move(board, turn, index, push_from): #passed into the function as a parameter
     
