@@ -240,3 +240,19 @@ def check_victory(board, who_played):
     else:
         return 0
     # return 0 = no winners 
+
+def generate_valid_moves(board, turn):
+    """Generate all valid moves for a player."""
+    #from the board
+    n = int(len(board) ** 0.5)
+    #create a empty list to put all legal moves
+    valid_moves = []
+    #look at every square in the board
+    for index in range(len(board)):
+        #need to check in all 4 directions
+        for push_from in ['T', 'B', 'L', 'R']:
+            if check_move(board, turn, index, push_from):
+                valid_moves.append((index, push_from))
+                #check moves first. if true then add to the board 
+    
+    return valid_moves
