@@ -35,3 +35,33 @@ def apply_move(board, turn, index, push_from):
         new_board[row*n + (n-1)] = turn  # your piece is inserted at the right position
     
     return new_board
+
+def play_game(board, player1_type, player2_type, player1_level, player2_level):
+    #main game loop, defines a function named play_game that will run the whole match loop.
+    #difficulty no. for the comp
+    current_player = 1 #sets who moves first
+    game_over = False #when False, game is still running. It is set to True when someone wins or quits which stops the loops.
+    
+    while not game_over:
+        display_board(board)
+        #start a while loop that keeps running until the game is over
+        #not game_over is True when the game is still running
+        #call a function to print the current board so that the plaer can see it before making a move
+        
+        if current_player == 1: #branch based on whose turn it is
+            player_type = player1_type
+            level = player1_level #difficulty for computer can be ignored if p1 is human
+        else:
+            player_type = player2_type
+            level = player2_level
+        
+        print(f"Player {current_player}'s turn ({'X' if current_player == 1 else 'O'})")
+        #prints whose turn it is
+        #{'X' if current player == 1 else 'O'} is a conditional expression that choose 'X' for p1, 'O' for p2
+        
+        if player_type == "human": #checks if the current player is human
+            index, push_from = get_human_move(board, current_player) #calls helper to validate input
+        else: 
+            print("Computer is thinking...") #print status message
+            index, push_from = computer_move(board, current_player, level)
+            print(f"Computer plays: index {index}, push from {push_from}")
