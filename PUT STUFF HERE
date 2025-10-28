@@ -194,3 +194,49 @@ def check_victory(board, who_played):
         if col_win2:
             player2_win = True
         #loop continues for all column 
+    
+    #check diagonal (top left to bottom right)
+    #do the same for first diagonal 
+    diag1_win1 = True
+    diag1_win2 = True
+    for i in range(n):
+        if board[i*n + i] != 1:
+        #checking for squares at 0,6,12,18,24 so use [i*n + i]
+            diag1_win1 = False
+        if board[i*n + i] != 2:
+            diag1_win2 = False
+    
+    if diag1_win1:
+        player1_win = True
+    if diag1_win2:
+        player2_win = True
+    
+    #check diagonal (top right to bottom left)
+    #do the same for second diagonal
+    diag2_win1 = True
+    diag2_win2 = True
+    for i in range(n):
+        if board[i*n + (n-1-i)] != 1:
+        #checking for squares at 4,8,12,16,20 so use [i*n +(n-1-i)]
+            diag2_win1 = False
+        if board[i*n + (n-1-i)] != 2:
+            diag2_win2 = False
+    
+    if diag2_win1:
+        player1_win = True
+    if diag2_win2:
+        player2_win = True
+    
+    #determine winner
+    if player1_win and player2_win:
+        return 3 - who_played
+    # - who played so if player 1 played then 3-1 so player 2 wins
+    elif player1_win:
+        return 1
+    #return 1 = player 1 win
+    elif player2_win:
+        return 2
+    #return 2 = player 2 win
+    else:
+        return 0
+    # return 0 = no winners 
