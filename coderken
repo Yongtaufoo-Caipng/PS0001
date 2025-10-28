@@ -70,3 +70,45 @@ def menu():
     print(f"\nPlayer {winner} wins!")
     
 
+
+def menu():
+    """
+    Main menu function to handle game setup and flow.
+    """
+    print("Welcome to Quixo!")
+    print("=" * 50)
+    
+    # Get board size
+    while True:
+        try:
+            n = int(input("Enter board size (default 5): ") or 5)
+            if n < 3:
+                print("Board size must be at least 3.")
+                continue
+            break
+        except ValueError:
+            print("Please enter a valid number.")
+    
+    # Initialize board
+    board = [0] * (n * n)
+    
+    # Get player types
+    print("\nPlayer types:")
+    print("1. Human")
+    print("2. Computer")
+    
+    player1_type = get_player_type("Player 1 (X)")
+    player2_type = get_player_type("Player 2 (O)")
+    
+    # Get computer difficulty if applicable
+    player1_level = 1
+    player2_level = 1
+    
+    if player1_type == "computer":
+        player1_level = get_computer_level("Player 1")
+    
+    if player2_type == "computer":
+        player2_level = get_computer_level("Player 2")
+    
+    # Start the game
+    play_game(board, player1_type, player2_type, player1_level, player2_level)
