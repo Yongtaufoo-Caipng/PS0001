@@ -1,8 +1,6 @@
-# %%
 import random
-import math
+import os
 
-# ---------------- CHECK MOVE ----------------
 def check_move(board, turn, index, push_from): #passed into the function as a parameter
     
     n = int(len(board) ** 0.5)  # len(board) gives the total number of elements in the list
@@ -10,21 +8,25 @@ def check_move(board, turn, index, push_from): #passed into the function as a pa
     #n is how many cubes fit on one side of the square board
     
     # Check if the cube index is within the range 0 to n^2-1
-    # index is which cube the player pick, is a number
+    # index is which cube the player pick is a number
     if index < 0 or index >= len(board):
         return False
-    #if either one of the index is true the whole thing will return false 
+    #if either one of the index is true the whole thing will print false 
     
     # Check if the cube is on the outer ring of the board
+
     row = index // n   # // is floor division get the integer only and to get the row number 
     col = index % n  # is to check for col number 
     if not (row == 0 or row == n-1 or col == 0 or col == n-1):
-            #top edge   #bottom edge  #left edge  #right edge
+            #top edge   #bottom edge  #left egde  #right edge
+            #T F F F = T , if not(T) = F , return F as condition is F 
+            #F F F F = F ,  if not(F) = T , do not return F as condition is T
         return False
     
     # Check if the cube belongs to the player or is blank
-    #!= not equal to, board[index] is the symbol at that point, means only X or O
-    if board[index] != 0 and board[index] != turn: #turn is 1 or 2 
+    #!= not equal to ,i board[index] is the value at that point means only X or O
+    if board[index] != 0 and board[index] != turn: # turn represents the current players turn
+    #and is T if both are T , then can return F 
         return False #invalid move 
     
     # Check if push direction is valid
@@ -36,18 +38,15 @@ def check_move(board, turn, index, push_from): #passed into the function as a pa
        (push_from == 'B' and row == n-1) or \
        (push_from == 'L' and col == 0) or \
        (push_from == 'R' and col == n-1):
-        return False 
-    #to check if we are trying to push from the same edge that we are already on 
-    #eg at 0 cannot push from Top position anymore, so if any of this is true can return false  
+        return False #either one of the abv are true then can return as false
     
     return True
 
-
-# ---------------- APPLY MOVE ----------------
 def apply_move(board, turn, index, push_from):
    
     n = int(len(board) ** 0.5)  # len(board) gives total no. of cells(25), ** 0.5 takes the square root(5), int() converts it to an integer 
-    new_board = board[:]  # create a copy so original isn't changed
+    new_board = board[:]
+    new_board = list(board) # can modify new_board w/o changing original board
     
     row = index // n   # // is floor division get the integer only
     col = index % n
@@ -56,6 +55,9 @@ def apply_move(board, turn, index, push_from):
         # shift column down from the top
         for r in range(row, 0, -1): # the loop counts downwards to prevent overwriting a value we still need to read
             new_board[r*n + col] = new_board[(r-1)*n + col] # destination index is r*n + col the cell at row r column col, source index is (r-1)*n + col the cell one row above the destination
+            # destination index is r*n + col the cell at row r column col, source index is (r-1)*n + col the cell one row above the destination
+            # 2D index formula r*n + c
+            # definition of a downward shift for a 'T' push: destination (r, c) gets the value from one row above (r-1,c)
         new_board[col] = turn  # your piece (turn) is inserted at the top
     
     elif push_from == 'B':
@@ -79,7 +81,6 @@ def apply_move(board, turn, index, push_from):
     return new_board
 
 
-# ---------------- CHECK VICTORY ----------------
 def check_victory(board, who_played):
     n = int(len(board) ** 0.5)
     player1_win = False
@@ -123,6 +124,23 @@ def check_victory(board, who_played):
         if col_win2:
             player2_win = True
         #loop continues for all column 
+    
+    #check diagonal (top left to bottom right)
+    #do the same for first diagonal 
+    diag1_win1 = True
+    diag1_win2 = True
+    for i in range(n):
+        if board[i*n + i] != 1:
+        #checking for squares at 0,6,12,18,24 so use [i*n + i]
+            diag1_win1 = False
+        if board[i*n + i] != 2:
+            diag1_win2 = False
+    
+    if diag1_win1:
+        player1_win = True
+    if diag1_win2:
+        player2_win = True
+    
     #check diagonal (top right to bottom left)
     #do the same for second diagonal
     diag2_win1 = True
@@ -153,117 +171,120 @@ def check_victory(board, who_played):
         return 0
     # return 0 = no winners 
 
+def computer_move(board, turn, level):# current board state, turn, current player's level and the difficulty level
 
-# ---------------- COMPUTER MOVE ----------------
-def computer_move(board, turn, level):
-    n = int(len(board) ** 0.5)
-    valid_moves = []  # list of all possible valid moves
+    n = int(len(board) ** 0.5)  # Board size, len(board)= n x n hence n = sqaureroot (len(board))
+    valid_moves = [] #list and initialisation
    
     # Generate all possible valid moves
-    for index in range(len(board)):
-        for push_from in ['T', 'B', 'L', 'R']:
-            if check_move(board, turn, index, push_from):
-                valid_moves.append((index, push_from))
+    for index in range(len(board)): #in range of the board size
+    #len(board) gives the number of cubes on the board 
+    # 5x5 board len(board) = 25
+        for push_from in ['T', 'B', 'L', 'R']: # tries all 4 directions, push from is the variable 
+            if check_move(board, turn, index, push_from): #parameters 
+            #( to check if its a valid move for the player to push the cube number(index) from direction (push_from))
+ #(board: current game board , turn: which players turn: index: the code we are checking, push_from: the direction we are checking)
+                valid_moves.append((index, push_from)) # is a list that stores all the valid moves found so far
+                #append is to add an item to the end of the list 
+                #add this valid move ( index and direction) to the list of valid moves
     
-    if not valid_moves:
-        return (0, 'T')
-
+    if not valid_moves: # not valid means the list is empty  no possible moves to make 
+        return 0, 'T'
+    # 0 is the first cube on the board index 0 
+    # T push from top 
+    # if computer has no valid move, default move is cube 0 from top
     if level == 1:
         # Level 1: Random move
-        return random.choice(valid_moves)
+        return random.choice(valid_moves) 
+    # chooses one random item from the list, each item is a tuple (index, push_from)
+    # js to pick a random valid move to play
     
     elif level == 2:
-        # Level 2: Try to win or block
-        for index, push_from in valid_moves:
+        # Level 2: Check for winning moves and avoid opponent's winning moves
+        # Check for immediate win
+        for index, push_from in valid_moves: # for a loop that goes through every possible valid move
+        # index is the cube position and push_from is the direction
             test_board = apply_move(board, turn, index, push_from)
-            if check_victory(test_board, turn) == turn:
-                return index, push_from
+            #test_board stores the temporary board to test what happened after the move is played
+            if check_victory(test_board, turn) == turn: # to check who won, if it equals means the current player won
+                return index, push_from # if the abv move can win will be returned 
         
-        opponent = 3 - turn
-        for index, push_from in valid_moves:
+        # Check if opponent can win next move and block it
+        opponent = 3 - turn # figure out who the opponent is, turn is 1 or 2
+        for index, push_from in valid_moves: # go through every possible valid moves
             test_board = apply_move(board, turn, index, push_from)
-            for opp_index, opp_push in generate_valid_moves(test_board, opponent):
-                opp_test_board = apply_move(test_board, opponent, opp_index, opp_push)
-                if check_victory(opp_test_board, opponent) == opponent:
-                    break
-            else:
+            # js a simulation board
+            
+            # Check all opponent moves after this move
+            opponent_can_win = False # assume that opponent cannot win/ no winning move
+            for opp_index, opp_push in generate_valid_moves(test_board, opponent): 
+                # a list of all possible moves the opponent can make on the test board
+                opp_test_board = apply_move(test_board, opponent, opp_index, opp_push) 
+                #simulates what it will look like if the opponent make the move 
+                if check_victory(opp_test_board, opponent) == opponent: #check if opponent wins
+                    opponent_can_win = True
+                    break # simce opponent can win through that move stop as its a bad move 
+            
+            if not opponent_can_win:# opponent cannot win
                 return index, push_from
+            # safe to play 
         
+        # If no strategic move found, return random move
         return random.choice(valid_moves)
 
-
-# ---------------- GENERATE VALID MOVES ----------------
 def generate_valid_moves(board, turn):
+    """Generate all valid moves for a player."""
     n = int(len(board) ** 0.5)
     valid_moves = []
+    
     for index in range(len(board)):
         for push_from in ['T', 'B', 'L', 'R']:
             if check_move(board, turn, index, push_from):
                 valid_moves.append((index, push_from))
+    
     return valid_moves
 
-
-# ---------------- DISPLAY BOARD ----------------
 def display_board(board):
-    n = int(len(board) ** 0.5)  # get side length
-    print("=" * (n * 4 + 1))      # Each cell takes up 4 characters
+    n = int(len(board) ** 0.5)  # This is to get the board side length, board is stored as one list, so I took the square root to get the number of rows/columns.”
+
+    print("=" * (n * 4 + 1))      # Each cell takes up 4 characters (" X |"), and there is 1 extra border on the left.
+                                         # So total width of the board border = n * 4 + 1.
     
     for i in range(n):
-        row_str = "|"      
-        for j in range(n):         
-            symbol = " "           
+        row_str = "|"             #The left border      
+        for j in range(n):         #Outer loop will be for rows and inner loop will be for columns
+            symbol = " "           # Each cell can assumed to be blank first 
+#Indexes in row 0: 0, 1, 2, 3, 4
+#Indexes in row 1: 5, 6, 7, 8, 9
+#Indexes in row 2: 10, 11, 12, 13, 14
+#To get to row 2, you skip 2 full rows (2 × 5 = 10 items).
+#Then, you move 3 steps into that row (add 3).
+#thus, 10 + 3 = 13.
+
             if board[i*n + j] == 1:
-                symbol = "X"       
+                symbol = "X"       #defines X
             elif board[i*n + j] == 2:
-                symbol = "O"       
-            row_str += f" {symbol} |"
-        print(row_str)
-        if i < n - 1:              
+                symbol = "O"       #Defines O
+            row_str += f" {symbol} |"     #F string tells python
+                                          #to replace anything inside {} with its actual value
+        print(row_str)    # will print out / symbol /
+        if i < n - 1:              #Dont print a line after last row
             print("|" + "---|" * n)
     
-    print("=" * (n * 4 + 1))   
+    print("=" * (n * 4 + 1))   #prints the bottom border, put + 1 to accoubt for left border, the formula is to count how many spaces
+                               # is needed to form the ======= bottom border
     
+    # Display index numbers for reference
     print("\nIndex positions:")
     for i in range(n):
         row_str = ""
         for j in range(n):
-            row_str += f" {i*n + j:2d} "   
+            row_str += f" {i*n + j:2d} "   #2d is to make sure the integers take up at least 2 spaces
         print(row_str)
     print()
+    
 
-# ---------------- GET_PLAYER_TYPE ----------------
-def get_player_type(player_name):
-    """Get player type (human or computer)."""
-    #keep asking until we have a answer we want
-    while True:
-        #ask for player or human and store answer as a variable called choice
-        choice = input(player_name + " type (1 for Human, 2 for Computer): ")
-        #if entered 1 then is human, entered 2 is computer 
-        if choice == "1":
-            return "human"
-        elif choice == "2":
-            return "computer"
-        #if player key something else go back and say enter 1 or 2 
-        else:
-            print("Please enter 1 or 2.")
-
-# ---------------- GET_COMPUTER LEVEL ----------------
-def get_computer_level(player_name):
-    """Get computer difficulty level."""
-    #keep asking until we have a answer we want
-    while True:
-        #ask player for computer level and store answer as a variable called level_input
-        level_input = input(player_name + " computer level (1 for Easy, 2 for Medium): ")
-        #if keyed 1 then easy if keyed 2 then medium
-        if level_input == "1":
-            return 1
-        elif level_input == "2":
-            return 2
-        #if player key something else go back and say enter 1 or 2 
-        else:
-            print("Please enter 1 or 2.")
-
-# ---------------- MENU ----------------
+            
 def menu():
     """
     Main menu function to handle game setup and flow.
@@ -306,9 +327,103 @@ def menu():
     # Start the game
     play_game(board, player1_type, player2_type, player1_level, player2_level)
 
+def get_player_type(player_name):
+    """Get player type (human or computer)."""
+    #keep asking until we have a answer we want
+    while True:
+        #ask for player or human and store answer as a variable called choice
+        choice = input(player_name + " type (1 for Human, 2 for Computer): ")
+        #if entered 1 then is human, entered 2 is computer 
+        if choice == "1":
+            return "human"
+        elif choice == "2":
+            return "computer"
+        #if player key something else go back and say enter 1 or 2 
+        else:
+            print("Please enter 1 or 2.")
+
+def get_computer_level(player_name):
+    """Get computer difficulty level."""
+    #keep asking until we have a answer we want
+    while True:
+        #ask player for computer level and store answer as a variable called level_input
+        level_input = input(player_name + " computer level (1 for Easy, 2 for Medium): ")
+        #if keyed 1 then easy if keyed 2 then medium
+        if level_input == "1":
+            return 1
+        elif level_input == "2":
+            return 2
+        #if player key something else go back and say enter 1 or 2 
+        else:
+            print("Please enter 1 or 2.")
+
+def play_game(board, player1_type, player2_type, player1_level, player2_level):
+    #main game loop, defines a function named play_game that will run the whole match loop.
+    #difficulty no. for the comp
+    current_player = 1 #sets who moves first
+    game_over = False #when False, game is still running. It is set to True when someone wins or quits which stops the loops.
+    
+    while not game_over:
+        display_board(board)
+        #start a while loop that keeps running until the game is over
+        #not game_over is True when the game is still running
+        #call a function to print the current board so that the plaer can see it before making a move
+        
+        if current_player == 1: #branch based on whose turn it is
+            player_type = player1_type
+            level = player1_level #difficulty for computer can be ignored if p1 is human
+        else:
+            player_type = player2_type
+            level = player2_level
+        
+        print(f"Player {current_player}'s turn ({'X' if current_player == 1 else 'O'})")
+        #prints whose turn it is
+        #{'X' if current player == 1 else 'O'} is a conditional expression that choose 'X' for p1, 'O' for p2
+        
+        if player_type == "human": #checks if the current player is human
+            index, push_from = get_human_move(board, current_player) #calls helper to validate input
+        else:
+            print("Computer is thinking...")
+            index, push_from = computer_move(board, current_player, level)
+            print(f"Computer plays: index {index}, push from {push_from}")
+        
+        # Apply the move
+        board = apply_move(board, current_player, index, push_from)
+        
+        # Check for victory
+        victory = check_victory(board, current_player)
+        if victory != 0:
+            display_board(board)
+            print(f"Player {victory} wins!")
+            game_over = True
+        else:
+            # Switch player
+            current_player = 3 - current_player  # Switches between 1 and 2
+    
+    # Ask if players want to play again
+    play_again = input("\nWould you like to play again? (y/n): ").lower()
+    if play_again == 'y':
+        menu()
+    
+       
+def get_human_move(board, turn):
+    """Get a valid move from a human player."""
+    n = int(len(board) ** 0.5)
+    
+    while True:
+        try:
+            index = int(input(f"Enter cube index (0-{n*n-1}): "))
+            push_from = input("Enter push direction (T, B, L, R): ").upper()
+            
+            if check_move(board, turn, index, push_from):
+                return index, push_from
+            else:
+                print("Invalid move. Please try again.")
+        except ValueError:
+            print("Please enter a valid number.")
 
 
-
-# ---------------- MAIN ----------------
+            
+# Start the game when the script is run
 if __name__ == "__main__":
     menu()
