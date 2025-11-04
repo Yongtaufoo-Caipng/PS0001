@@ -394,7 +394,7 @@ def play_game(board, player1_type, player2_type, player1_level, player2_level):
         victory = check_victory(board, current_player)
         if victory != 0:
             display_board(board)
-            print(f"Player {victory} wins!")
+            print(f"😎😆Player {victory} wins!🤤👅")
             game_over = True
         else:
             # Switch player
