@@ -389,3 +389,33 @@ def play_game(board, player1_type, player2_type, player1_level, player2_level):
             print("Computer is thinking...") #print status message
             index, push_from = computer_move(board, current_player, level)
             print(f"Computer plays: index {index}, push from {push_from}")
+
+def get_player_type(player_name):
+    """Get player type (human or computer)."""
+    #keep asking until we have a answer we want
+    while True:
+        #ask for player or human and store answer as a variable called choice
+        choice = input(player_name + " type (1 for Human, 2 for Computer): ")
+        #if entered 1 then is human, entered 2 is computer 
+        if choice == "1":
+            return "human"
+        elif choice == "2":
+            return "computer"
+        #if player key something else go back and say enter 1 or 2 
+        else:
+            print("Please enter 1 or 2.")
+
+def get_computer_level(player_name):
+    """Get computer difficulty level."""
+    #keep asking until we have a answer we want
+    while True:
+        #ask player for computer level and store answer as a variable called level_input
+        level_input = input(player_name + " computer level (1 for Easy, 2 for Medium): ")
+        #if keyed 1 then easy if keyed 2 then medium
+        if level_input == "1":
+            return 1
+        elif level_input == "2":
+            return 2
+        #if player key something else go back and say enter 1 or 2 
+        else:
+            print("Please enter 1 or 2.")
