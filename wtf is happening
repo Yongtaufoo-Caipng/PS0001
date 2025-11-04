@@ -1,0 +1,198 @@
+import random
+import math
+
+# ---------------- CHECK MOVE ----------------
+def check_move(board, turn, index, push_from):
+    n = int(len(board) ** 0.5)
+    if index < 0 or index >= len(board):
+        return False
+    
+    row = index // n
+    col = index % n
+    if not (row == 0 or row == n-1 or col == 0 or col == n-1):
+        return False
+    
+    if board[index] != 0 and board[index] != turn:
+        return False
+    
+    if push_from not in ['T', 'B', 'L', 'R']:
+        return False
+    
+    if (push_from == 'T' and row == 0) or \
+       (push_from == 'B' and row == n-1) or \
+       (push_from == 'L' and col == 0) or \
+       (push_from == 'R' and col == n-1):
+        return False 
+    
+    return True
+
+
+# ---------------- APPLY MOVE ----------------
+def apply_move(board, turn, index, push_from):
+    n = int(len(board) ** 0.5)
+    new_board = board[:]
+    
+    row = index // n
+    col = index % n
+    
+    if push_from == 'T':
+        for r in range(row, 0, -1):
+            new_board[r*n + col] = new_board[(r-1)*n + col]
+        new_board[col] = turn
+    
+    elif push_from == 'B':
+        for r in range(row, n-1):
+            new_board[r*n + col] = new_board[(r+1)*n + col]
+        new_board[(n-1)*n + col] = turn
+    
+    elif push_from == 'L':
+        for c in range(col, 0, -1):
+            new_board[row*n + c] = new_board[row*n + (c-1)]
+        new_board[row*n] = turn
+    
+    elif push_from == 'R':
+        for c in range(col, n-1):
+            new_board[row*n + c] = new_board[row*n + (c+1)]
+        new_board[row*n + (n-1)] = turn
+    
+    return new_board
+
+
+# ---------------- CHECK VICTORY ----------------
+def check_victory(board, who_played):
+    n = int(len(board) ** 0.5)
+    player1_win = False
+    player2_win = False
+
+    # check rows
+    for i in range(n):
+        if all(board[i*n + j] == 1 for j in range(n)):
+            player1_win = True
+        if all(board[i*n + j] == 2 for j in range(n)):
+            player2_win = True
+
+    # check columns
+    for j in range(n):
+        if all(board[i*n + j] == 1 for i in range(n)):
+            player1_win = True
+        if all(board[i*n + j] == 2 for i in range(n)):
+            player2_win = True
+
+    # diagonals
+    if all(board[i*n + i] == 1 for i in range(n)):
+        player1_win = True
+    if all(board[i*n + i] == 2 for i in range(n)):
+        player2_win = True
+    if all(board[i*n + (n-1-i)] == 1 for i in range(n)):
+        player1_win = True
+    if all(board[i*n + (n-1-i)] == 2 for i in range(n)):
+        player2_win = True
+
+    # determine winner
+    if player1_win and player2_win:
+        return 3 - who_played
+    elif player1_win:
+        return 1
+    elif player2_win:
+        return 2
+    else:
+        return 0
+
+
+# ---------------- COMPUTER MOVE ----------------
+def computer_move(board, turn, level):
+    n = int(len(board) ** 0.5)
+    valid_moves = []
+   
+    for index in range(len(board)):
+        for push_from in ['T', 'B', 'L', 'R']:
+            if check_move(board, turn, index, push_from):
+                valid_moves.append((index, push_from))
+    
+    if not valid_moves:
+        return (0, 'T')
+
+    if level == 1:
+        return random.choice(valid_moves)
+    
+    elif level == 2:
+        for index, push_from in valid_moves:
+            test_board = apply_move(board, turn, index, push_from)
+            if check_victory(test_board, turn) == turn:
+                return index, push_from
+        return random.choice(valid_moves)
+
+
+# ---------------- DISPLAY BOARD ----------------
+def display_board(board):
+    n = int(len(board) ** 0.5)
+    print("=" * (n * 4 + 1))
+    for i in range(n):
+        row_str = "|"
+        for j in range(n):
+            symbol = " "
+            if board[i*n + j] == 1:
+                symbol = "X"
+            elif board[i*n + j] == 2:
+                symbol = "O"
+            row_str += f" {symbol} |"
+        print(row_str)
+        if i < n - 1:
+            print("|" + "---|" * n)
+    print("=" * (n * 4 + 1))
+    print("\nIndex positions:")
+    for i in range(n):
+        row_str = ""
+        for j in range(n):
+            row_str += f" {i*n + j:2d} "
+        print(row_str)
+    print()
+
+
+# ---------------- MENU ----------------
+def menu():
+    print("Welcome to Quixo!")
+    print("=" * 50)
+
+    while True:
+        try:
+            n = int(input("Enter board size (default 5): ") or 5)
+            if n < 3:
+                print("Board size must be at least 3.")
+                continue
+            break
+        except ValueError:
+            print("Please enter a valid number.")
+
+    board = [0] * (n * n)
+    turn = 1
+    winner = 0
+
+    while winner == 0:
+        display_board(board)
+        print(f"Player {turn}'s turn:")
+        if turn == 1:
+            index = int(input(f"Enter cube index (0–{n*n-1}): "))
+            push_from = input("Enter direction (T, B, L, R): ").upper()
+            if check_move(board, turn, index, push_from):
+                board = apply_move(board, turn, index, push_from)
+            else:
+                print("Invalid move! Try again.")
+                continue
+        else:
+            print("Computer is thinking...")
+            index, push_from = computer_move(board, turn, 1)
+            print(f"Computer chose index {index} from {push_from}")
+            board = apply_move(board, turn, index, push_from)
+        
+        winner = check_victory(board, turn)
+        if winner == 0:
+            turn = 2 if turn == 1 else 1
+
+    display_board(board)
+    print(f"\nPlayer {winner} wins!")
+
+
+# ---------------- MAIN ----------------
+if __name__ == "__main__":
+    menu()
