@@ -84,22 +84,30 @@ def check_victory(board, who_played):
     player1_win = False
     player2_win = False
     #start with both false as none have won
-    
+    #start with false if not if the bottom checking part have error, players will win without actually winning
     #check rows
     for i in range(n): #check each row 
         row_win1 = True 
         row_win2 = True
+        #asumming both player might win at this row
         for j in range(n):
             if board[i*n + j] != 1:
+            #for this row (i) and at this column (j) does it have 1 or 2 
+            #check at which specific square have either 1 or 2
+            #if at that i row does not have all 1 then player 1 did not win
                 row_win1 = False
+            #repeat the same for player 2
             if board[i*n + j] != 2:
                 row_win2 = False
+        #if the whole row have 1 then player 1 wins, same for player 2
         if row_win1:
             player1_win = True
         if row_win2:
             player2_win = True
+        #loop will continue for all rows
     
     #check columns
+    #do the same for columns
     for j in range(n):
         col_win1 = True
         col_win2 = True
@@ -108,32 +116,23 @@ def check_victory(board, who_played):
                 col_win1 = False
             if board[i*n + j] != 2:
                 col_win2 = False
+        
         if col_win1:
             player1_win = True
         if col_win2:
             player2_win = True
-    
-    #check diagonal (top left to bottom right)
-    diag1_win1 = True
-    diag1_win2 = True
-    for i in range(n):
-        if board[i*n + i] != 1:
-            diag1_win1 = False
-        if board[i*n + i] != 2:
-            diag1_win2 = False
-    if diag1_win1:
-        player1_win = True
-    if diag1_win2:
-        player2_win = True
-    
+        #loop continues for all column 
     #check diagonal (top right to bottom left)
+    #do the same for second diagonal
     diag2_win1 = True
     diag2_win2 = True
     for i in range(n):
         if board[i*n + (n-1-i)] != 1:
+        #checking for squares at 4,8,12,16,20 so use [i*n +(n-1-i)]
             diag2_win1 = False
         if board[i*n + (n-1-i)] != 2:
             diag2_win2 = False
+    
     if diag2_win1:
         player1_win = True
     if diag2_win2:
@@ -142,12 +141,16 @@ def check_victory(board, who_played):
     #determine winner
     if player1_win and player2_win:
         return 3 - who_played
+    # - who played so if player 1 played then 3-1 so player 2 wins
     elif player1_win:
         return 1
+    #return 1 = player 1 win
     elif player2_win:
         return 2
+    #return 2 = player 2 win
     else:
         return 0
+    # return 0 = no winners 
 
 
 # ---------------- COMPUTER MOVE ----------------
@@ -227,6 +230,37 @@ def display_board(board):
         print(row_str)
     print()
 
+# ---------------- GET_PLAYER_TYPE ----------------
+def get_player_type(player_name):
+    """Get player type (human or computer)."""
+    #keep asking until we have a answer we want
+    while True:
+        #ask for player or human and store answer as a variable called choice
+        choice = input(player_name + " type (1 for Human, 2 for Computer): ")
+        #if entered 1 then is human, entered 2 is computer 
+        if choice == "1":
+            return "human"
+        elif choice == "2":
+            return "computer"
+        #if player key something else go back and say enter 1 or 2 
+        else:
+            print("Please enter 1 or 2.")
+
+# ---------------- GET_COMPUTER LEVEL ----------------
+def get_computer_level(player_name):
+    """Get computer difficulty level."""
+    #keep asking until we have a answer we want
+    while True:
+        #ask player for computer level and store answer as a variable called level_input
+        level_input = input(player_name + " computer level (1 for Easy, 2 for Medium): ")
+        #if keyed 1 then easy if keyed 2 then medium
+        if level_input == "1":
+            return 1
+        elif level_input == "2":
+            return 2
+        #if player key something else go back and say enter 1 or 2 
+        else:
+            print("Please enter 1 or 2.")
 
 # ---------------- MENU ----------------
 def menu():
