@@ -421,3 +421,23 @@ def play_game(board, player1_type, player2_type, player1_level, player2_level):
             print("Computer is thinking...") #print status message
             index, push_from = computer_move(board, current_player, level)
             print(f"Computer plays: index {index}, push from {push_from}")
+
+def get_human_move(board, turn):
+    """Get a valid move from a human player."""
+    n = int(len(board) ** 0.5)
+    
+    while True:
+        try:
+            index = int(input(f"Enter cube index (0-{n*n-1}): "))
+            push_from = input("Enter push direction (T, B, L, R): ").upper()
+            
+            if check_move(board, turn, index, push_from):
+                return index, push_from
+            else:
+                print("Invalid move. Please try again.")
+        except ValueError:
+            print("Please enter a valid number.")
+
+# Start the game when the script is run
+if __name__ == "__main__":
+    menu()
