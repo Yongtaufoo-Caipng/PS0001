@@ -383,7 +383,7 @@ def play_game(board, player1_type, player2_type, player1_level, player2_level):
         if player_type == "human": #checks if the current player is human
             index, push_from = get_human_move(board, current_player) #calls helper to validate input
         else:
-            print("Computer is thinking...")
+            print("Computer pondering leh...🤔💭")
             index, push_from = computer_move(board, current_player, level)
             print(f"Computer plays: index {index}, push from {push_from}")
         
